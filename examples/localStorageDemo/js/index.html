@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="elm.js"></script>
+	<title>Local Storage Demo</title>
+</head>
+
+<body>
+	<div id="myapp"></div>
+	<script>
+		// Try to extract existing data from the localStorage
+		var storedData = localStorage.getItem("myapp-model");
+		// If data exists, a complete model is sent as JSON, otherwise
+		// a `null` value is sent
+		var flags = storedData ? JSON.parse(storedData) : null;
+
+		// Load the Elm app, passing in the data loaded
+		var app = Elm.Main.init({
+			node: document.getElementById("myapp"),
+			flags: flags
+		});
+
+		// Listen for commands from the `setStorage` port
+		// When Elm sends data, simply update the localStorage with it
+		// Note: `setStorage` is a port set in the Elm script
+		app.ports.setStorage.subscribe(function (state) {
+			localStorage.setItem("myapp-model", JSON.stringify(state));
+		});
+
+	</script>
+</body>
+
+</html>

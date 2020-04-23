@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="elm.js"></script>
+    <title>Sockets Example</title>
+</head>
+
+<body>
+    <div id="myapp"></div>
+
+    <script>
+        // Start the Elm application
+        var app = Elm.Main.init({
+            node: document.getElementById('myapp')
+        });
+
+        // Create the WebSocket
+        var socket = new WebSocket('wss://echo.websocket.org');
+        
+        // If the user sends a message, then process it in Elm (`sendMessage`
+        // port) and then send it to the socket here in JS
+        app.ports.sendMessage.subscribe(function (message) {
+            socket.send(message);
+        });
+
+        // When the socket "replies", pass it on to Elm (`messageReceiver`
+        // port)
+        socket.addEventListener("message", function (event) {
+            app.ports.messageReceiver.send(event.data);
+        });
+
+    </script>
+</body>
+
+</html>
